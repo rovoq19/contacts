@@ -1,10 +1,27 @@
+function getIndex(list, id) {
+    for (var i = 0; i < list.length; i++ ) {
+        if (list[i].id === id) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 var userApi = Vue.resource('/user{/id}');
 
 Vue.component('user-form',{
-    props: ['users'],
+    props: ['users', 'userAttr'],
     data: function(){
         return{
-            name: ''
+            name: '',
+            id: ''
+        }
+    },
+    watch: {
+        userAttr: function(newVal, oldVal){
+            this.name=newVal.name;
+            this.id=newVal.id;
         }
     },
     template:
@@ -16,27 +33,54 @@ Vue.component('user-form',{
         save: function(){
             var user = { name: this.name };
 
-            userApi.save({}, user).then(result =>
-                result.json().then(data => {
-                    this.users.push(data);
-                    this.name = '';
-                })
-            )
+            if(this.id){
+                userApi.update({id: this.id}, user).then(result =>
+                    result.json().then(data => {
+                        var index = getIndex(this.users, data.id);
+                        this.users.splice(index, 1, data);
+                        this.name = '';
+                        this.id = '';
+                    })
+                )
+            } else{
+                userApi.save({}, user).then(result =>
+                    result.json().then(data => {
+                        this.users.push(data);
+                        this.name = '';
+                    })
+                )
+            }
         }
     }
 });
 
 Vue.component('user-row', {
-  props: ['user'],
-  template: '<div><i>({{ user.id }})</i>{{ user.name }}</div>'
+  props: ['user', 'editMethod'],
+  template:
+    '<div>' +
+        '<i>({{ user.id }})</i>{{ user.name }}' +
+        '<span style="position: absolute; right: 0">' +
+            '<input type="button" value="Edit" @click="edit" />' +
+        '</span>'+
+    '</div>',
+  methods: {
+    edit: function(){
+        this.editMethod(this.user);
+    }
+  }
 });
 
 Vue.component('users-list', {
   props: ['users'],
+  data: function(){
+    return {
+        user: null
+    }
+  },
   template:
-    '<div>' +
-        '<user-form :users="users"/>' +
-        '<user-row v-for="user in users" :key="user.id" :user="user" />' +
+    '<div style="position: relative; width: 300px;">' +
+        '<user-form :users="users" :userAttr="user" />' +
+        '<user-row v-for="user in users" :key="user.id" :user="user" :editMethod="editMethod"/>' +
     '</div>',
   created: function(){
     userApi.get().then(result =>
@@ -44,6 +88,11 @@ Vue.component('users-list', {
             data.forEach(user => this.users.push(user))
         )
     )
+  },
+  methods: {
+    editMethod: function(user){
+        this.user = user;
+    }
   }
 });
 
