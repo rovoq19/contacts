@@ -55,17 +55,25 @@ Vue.component('user-form',{
 });
 
 Vue.component('user-row', {
-  props: ['user', 'editMethod'],
+  props: ['user', 'editMethod', 'users'],
   template:
     '<div>' +
         '<i>({{ user.id }})</i>{{ user.name }}' +
         '<span style="position: absolute; right: 0">' +
             '<input type="button" value="Edit" @click="edit" />' +
+            '<input type="button" value="Delete" @click="del" />' +
         '</span>'+
     '</div>',
   methods: {
     edit: function(){
         this.editMethod(this.user);
+    },
+    del: function(){
+        userApi.remove({id: this.user.id}).then(result =>{
+            if(result.ok){
+                this.users.splice(this.users.indexOf(this.user), 1)
+            }
+        })
     }
   }
 });
@@ -80,7 +88,7 @@ Vue.component('users-list', {
   template:
     '<div style="position: relative; width: 300px;">' +
         '<user-form :users="users" :userAttr="user" />' +
-        '<user-row v-for="user in users" :key="user.id" :user="user" :editMethod="editMethod"/>' +
+        '<user-row v-for="user in users" :key="user.id" :user="user" :editMethod="editMethod" :users="users"/>' +
     '</div>',
   created: function(){
     userApi.get().then(result =>
