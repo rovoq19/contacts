@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import rovoq19.contacts.domain.User;
 import rovoq19.contacts.reps.UserRep;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -30,6 +31,7 @@ public class userController {
 
     @PostMapping
     public User addUser(@RequestBody User user){
+        user.setCreationDate(LocalDateTime.now ());
         return userRep.save(user);
     }
 
