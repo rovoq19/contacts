@@ -1,2 +1,2 @@
-# contacts
-REST API "Contacts"
+# Контакты
+REST API реализовывает функции списка контактов.
