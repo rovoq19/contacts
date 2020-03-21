@@ -27,7 +27,7 @@ Vue.component('user-form',{
     template:
         '<div>' +
             '<input type="text" placeholder="Ввод" v-model="name" />' +
-            '<input type="button" value="Сохранить" @click="save"/>' +
+            '<input type="button" value="Сохранить" @click="save" style="margin: 5px"/>' +
         '</div>',
     methods: {
         save: function(){
@@ -57,11 +57,11 @@ Vue.component('user-form',{
 Vue.component('user-row', {
   props: ['user', 'editMethod', 'users'],
   template:
-    '<div>' +
+    '<div style="padding-top: 10px">' +
         '{{ user.id }}) {{ user.name }}' +
-        '<span style="position: absolute; right: 0">' +
-            '<input type="button" value="Редактировать" @click="edit" />' +
-            '<input type="button" value="Удалить" @click="del" />' +
+        '<span style="absolute: absolute; left: 200px; display: block">' +
+            '<input type="button" value="Редактировать" @click="edit" style="margin: 5px"/>' +
+            '<input type="button" value="Удалить" @click="del" style="margin: 5px"/>' +
         '</span>'+
     '</div>',
   methods: {
