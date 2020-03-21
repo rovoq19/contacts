@@ -22,4 +22,12 @@ public class User {
     @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationDate;
+
+    public void setCreationDate (LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getCreationDate () {
+        return creationDate;
+    }
 }
