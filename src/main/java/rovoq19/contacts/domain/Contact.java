@@ -9,16 +9,16 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "contacts")
 @Data
-@ToString(of={"id", "name"})
+@ToString(of={"id", "contactName"})
 @EqualsAndHashCode(of = {"id"})
-public class User {
+public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false, unique=true)
     private Long id;
-    private String name;
+    private String contactName;
     @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationDate;

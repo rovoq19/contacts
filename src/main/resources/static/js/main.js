@@ -8,45 +8,45 @@ function getIndex(list, id) {
     return -1;
 }
 
-var userApi = Vue.resource('/user{/id}');
+var contactApi = Vue.resource('/contact{/id}');
 
-Vue.component('user-form',{
-    props: ['users', 'userAttr'],
+Vue.component('contact-form',{
+    props: ['contacts', 'contactAttr'],
     data: function(){
         return{
-            name: '',
+            contactName: '',
             id: ''
         }
     },
     watch: {
-        userAttr: function(newVal, oldVal){
-            this.name=newVal.name;
+        contactAttr: function(newVal, oldVal){
+            this.contactName=newVal.contactName;
             this.id=newVal.id;
         }
     },
     template:
         '<div>' +
-            '<input type="text" placeholder="Ввод" v-model="name" />' +
+            '<input type="text" placeholder="Ввод" v-model="contactName" />' +
             '<input type="button" value="Сохранить" @click="save" style="margin: 5px"/>' +
         '</div>',
     methods: {
         save: function(){
-            var user = { name: this.name };
+            var contact = { contactName: this.contactName };
 
             if(this.id){
-                userApi.update({id: this.id}, user).then(result =>
+                contactApi.update({id: this.id}, contact).then(result =>
                     result.json().then(data => {
-                        var index = getIndex(this.users, data.id);
-                        this.users.splice(index, 1, data);
-                        this.name = '';
+                        var index = getIndex(this.contacts, data.id);
+                        this.contacts.splice(index, 1, data);
+                        this.contactName = '';
                         this.id = '';
                     })
                 )
             } else{
-                userApi.save({}, user).then(result =>
+                contactApi.save({}, contact).then(result =>
                     result.json().then(data => {
-                        this.users.push(data);
-                        this.name = '';
+                        this.contacts.push(data);
+                        this.contactName = '';
                     })
                 )
             }
@@ -54,11 +54,11 @@ Vue.component('user-form',{
     }
 });
 
-Vue.component('user-row', {
-  props: ['user', 'editMethod', 'users'],
+Vue.component('contact-row', {
+  props: ['contact', 'editMethod', 'contacts'],
   template:
     '<div style="padding-top: 10px">' +
-        '{{ user.id }}) {{ user.name }}' +
+        '{{ contact.id }}) {{ contact.contactName }}' +
         '<span style="absolute: absolute; left: 200px; display: block">' +
             '<input type="button" value="Редактировать" @click="edit" style="margin: 5px"/>' +
             '<input type="button" value="Удалить" @click="del" style="margin: 5px"/>' +
@@ -66,48 +66,48 @@ Vue.component('user-row', {
     '</div>',
   methods: {
     edit: function(){
-        this.editMethod(this.user);
+        this.editMethod(this.contact);
     },
     del: function(){
-        userApi.remove({id: this.user.id}).then(result =>{
+        contactApi.remove({id: this.contact.id}).then(result =>{
             if(result.ok){
-                this.users.splice(this.users.indexOf(this.user), 1)
+                this.contacts.splice(this.contacts.indexOf(this.contact), 1)
             }
         })
     }
   }
 });
 
-Vue.component('users-list', {
-  props: ['users'],
+Vue.component('contacts-list', {
+  props: ['contacts'],
   data: function(){
     return {
-        user: null
+        contact: null
     }
   },
   template:
     '<div style="position: relative; width: 300px;">' +
-        '<user-form :users="users" :userAttr="user" />' +
-        '<user-row v-for="user in users" :key="user.id" :user="user" :editMethod="editMethod" :users="users"/>' +
+        '<contact-form :contacts="contacts" :contactAttr="contact" />' +
+        '<contact-row v-for="contact in contacts" :key="contact.id" :contact="contact" :editMethod="editMethod" :contacts="contacts"/>' +
     '</div>',
   created: function(){
-    userApi.get().then(result =>
+    contactApi.get().then(result =>
         result.json().then(data =>
-            data.forEach(user => this.users.push(user))
+            data.forEach(contact => this.contacts.push(contact))
         )
     )
   },
   methods: {
-    editMethod: function(user){
-        this.user = user;
+    editMethod: function(contact){
+        this.contact = contact;
     }
   }
 });
 
 var app = new Vue({
   el: '#app',
-  template: '<users-list :users="users" />',
+  template: '<contacts-list :contacts="contacts" />',
   data: {
-    users: []
+    contacts: []
   }
 });
