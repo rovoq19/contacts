@@ -90,13 +90,6 @@ Vue.component('contacts-list', {
         '<contact-form :contacts="contacts" :contactAttr="contact" />' +
         '<contact-row v-for="contact in contacts" :key="contact.id" :contact="contact" :editMethod="editMethod" :contacts="contacts"/>' +
     '</div>',
-  created: function(){
-    contactApi.get().then(result =>
-        result.json().then(data =>
-            data.forEach(contact => this.contacts.push(contact))
-        )
-    )
-  },
   methods: {
     editMethod: function(contact){
         this.contact = contact;
@@ -106,8 +99,23 @@ Vue.component('contacts-list', {
 
 var app = new Vue({
   el: '#app',
-  template: '<contacts-list :contacts="contacts" />',
+  template:
+      '<div>' +
+        '<div v-if="!profile">Необходимо авторизоваться через <a href="/login">Google</a></div>' +
+        '<div v-else>'+
+            '<div>{{profile.name}}&nbsp;<a href="/logout">Выйти</a></div>' +
+            '<contacts-list :contacts="contacts" />' +
+        '</div>'+
+      '</div>',
   data: {
-    contacts: []
-  }
+    contacts: frontendData.contacts,
+    profile: frontendData.profile
+  },
+    created: function(){
+//      contactApi.get().then(result =>
+//          result.json().then(data =>
+//              data.forEach(contact => this.contacts.push(contact))
+//          )
+//      )
+    },
 });
