@@ -3,15 +3,18 @@ package rovoq19.contacts.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "usr")
 @Data
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", updatable = false, nullable = false, unique=true)
-    private Long id;
-    private String login;
-    private String password;
+    private String id;
+    private String name;
+    private String userpic;
+    private String email;
+    private String gender;
+    private String locale;
+    private LocalDateTime lastVisit;
 }
