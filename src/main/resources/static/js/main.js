@@ -15,23 +15,26 @@ Vue.component('contact-form',{
     data: function(){
         return{
             contactName: '',
+            contactPhone: '',
             id: ''
         }
     },
     watch: {
         contactAttr: function(newVal, oldVal){
             this.contactName=newVal.contactName;
+            this.contactPhone=newVal.contactPhone;
             this.id=newVal.id;
         }
     },
     template:
         '<div>' +
-            '<input type="text" placeholder="Ввод" v-model="contactName" />' +
+            '<input type="text" placeholder="Имя" v-model="contactName" />' +
+            '<input type="text" placeholder="Номер телефона" v-model="contactPhone" />' +
             '<input type="button" value="Сохранить" @click="save" style="margin: 5px"/>' +
         '</div>',
     methods: {
         save: function(){
-            var contact = { contactName: this.contactName };
+            var contact = { contactName: this.contactName , contactPhone: this.contactPhone };
 
             if(this.id){
                 contactApi.update({id: this.id}, contact).then(result =>
@@ -39,6 +42,7 @@ Vue.component('contact-form',{
                         var index = getIndex(this.contacts, data.id);
                         this.contacts.splice(index, 1, data);
                         this.contactName = '';
+                        this.contactPhone = '';
                         this.id = '';
                     })
                 )
@@ -47,6 +51,7 @@ Vue.component('contact-form',{
                     result.json().then(data => {
                         this.contacts.push(data);
                         this.contactName = '';
+                        this.contactPhone = '';
                     })
                 )
             }
@@ -58,7 +63,8 @@ Vue.component('contact-row', {
   props: ['contact', 'editMethod', 'contacts'],
   template:
     '<div style="padding-top: 10px">' +
-        '{{ contact.id }}) {{ contact.contactName }}' +
+        '<div>{{ contact.id }}. Имя: {{ contact.contactName }}</div>' +
+        '<div> Номер: {{ contact.contactPhone }} </div>' +
         '<span style="absolute: absolute; left: 200px; display: block">' +
             '<input type="button" value="Редактировать" @click="edit" style="margin: 5px"/>' +
             '<input type="button" value="Удалить" @click="del" style="margin: 5px"/>' +
@@ -101,7 +107,7 @@ var app = new Vue({
   el: '#app',
   template:
       '<div>' +
-        '<div v-if="!profile">Необходимо авторизоваться через <a href="/login">Google</a></div>' +
+        '<div v-if="!profile"><a href="/login">Авторизация через Google</a></div>' +
         '<div v-else>'+
             '<div>{{profile.name}}&nbsp;<a href="/logout">Выйти</a></div>' +
             '<contacts-list :contacts="contacts" />' +
@@ -110,12 +116,5 @@ var app = new Vue({
   data: {
     contacts: frontendData.contacts,
     profile: frontendData.profile
-  },
-    created: function(){
-//      contactApi.get().then(result =>
-//          result.json().then(data =>
-//              data.forEach(contact => this.contacts.push(contact))
-//          )
-//      )
-    },
+  }
 });

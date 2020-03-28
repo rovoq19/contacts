@@ -19,6 +19,7 @@ public class Contact {
     @Column(name = "id", updatable = false, nullable = false, unique=true)
     private Long id;
     private String contactName;
+    private String contactPhone;
     @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationDate;
