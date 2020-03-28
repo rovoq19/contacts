@@ -1,5 +1,6 @@
 # REST API Контакты
 Приложение реализует функциональность списка контактов.
+Приложение загружено на веб-хостинг Heroku: https://contacts19.herokuapp.com/
 ![Приложение](src/main/resources/screenshots/app.png)
 ## Функции приложения
 - Авторизация через Google
